@@ -1,0 +1,180 @@
+/* animations */
+/* bg anim */
+@-webkit-keyframes rightColorAnim {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@-moz-keyframes rightColorAnim {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@keyframes rightColorAnim {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+@-webkit-keyframes leftColorAnim {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@-moz-keyframes leftColorAnim {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@keyframes leftColorAnim {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+
+
+html {
+	background-color: #272727;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	height: 100vh;
+	overflow: hidden;
+	position: fixed;
+	width: 100%;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	overflow: hidden;
+	position: fixed;
+	width: 100%;
+}
+
+nav {
+	bottom: 0;
+	position: fixed;
+	width: 100%;
+}
+
+nav ul {
+	display: flex;
+	justify-content: space-around;
+	list-style: none;
+	margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+	margin: 1rem;
+	opacity: 0.5;
+}
+
+nav ul li button {
+	background: none;
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+
+/* opacity changes only on the list item */
+
+nav ul li.active {
+	opacity: 0.9;
+}
+
+nav ul li:active button {
+	opacity: 0.3;
+}
+
+nav ul li:hover button, nav ul li button:focus {
+	opacity: 0.6;
+}
+
+.content {
+	height: inherit;
+}
+
+div.info {
+	margin: 1.125rem;
+}
+
+div.info div.live-data {
+	color: #fff;
+	font-size: 1.75rem;
+	font-weight: 600;
+	margin: 0.85rem 0;
+	opacity: 0.8;
+}
+
+@media only screen and (orientation:portrait) {
+	body {
+		background: linear-gradient(270deg, #b1418c, #b1551b, #b1971b, #b1418c);
+		background-size: 800% 800%;
+
+		-webkit-animation: rightColorAnim 31s ease infinite;
+		-moz-animation: rightColorAnim 31s ease infinite;
+		animation: rightColorAnim 31s ease infinite;
+	}
+
+	.icons {
+		margin: 1rem auto;
+		
+	}
+
+	.icons .speaker {
+		display: block;
+	}
+
+	.icons .volume {
+		display: none;
+	}
+
+}
+
+@media only screen and (orientation:landscape) {
+	body {
+		background: linear-gradient(270deg, #4741b1, #197a2c, #1b9870, #4741b1);
+		background-size: 800% 800%;
+
+		-webkit-animation: leftColorAnim 32s ease infinite;
+		-moz-animation: leftColorAnim 32s ease infinite;
+		animation: leftColorAnim 32s ease infinite;
+		
+	}
+
+	.icons .speaker {
+		display: none;
+	}
+
+	.icons .volume {
+		display: block;
+	}
+
+}
+
+.touch-haptic {
+	background-color: #fff;
+	border-radius: 50%;
+	opacity: .2;
+	height: 44px;
+	margin: -22px -22px;
+	position: absolute;
+	transition: transform 119ms linear, opacity 119ms linear;
+	transform: scale(0.1);
+	width: 44px;
+	z-index: 500;
+}
+
+.touch-haptic.anim {
+	opacity: 0.64;
+	transform: scale(1);
+}
+
+.touch-haptic.inner {
+	opacity: 0.8;
+	transition: none;
+	transform: none;
+	z-index: 501;
+}
