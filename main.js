@@ -1,3 +1,6 @@
+// --------------------------------------------------------
+// Element References
+// --------------------------------------------------------
 const body = document.querySelector('body');
 let activeFrequencyDisplay = document.querySelector('.info div.active-frequency span.data');
 // const activeFrequencyUnitDisplay = document.querySelector('.info div.active-frequency span.unit');
@@ -5,6 +8,9 @@ let activeFrequencyDisplay = document.querySelector('.info div.active-frequency 
 let activePanDisplay = document.querySelector('.info div.active-pan span.data');
 let activePanUnitDisplay = document.querySelector('.info div.active-pan span.unit');
 
+// --------------------------------------------------------
+// Touch Feedback Global Variables
+// --------------------------------------------------------
 let activeData = {
     freq: 0,
     pan: 0
@@ -12,11 +18,37 @@ let activeData = {
 
 let touchHapticArray = [];
 
-const updateData = (data) => {
+// --------------------------------------------------------
+// Tone.js Global Variables
+// --------------------------------------------------------
+Tone.Transport.toggle(); //start the transport
+let masterVolume = new Tone.Volume(-12);
+let stereoPanner = new Tone.Panner(0.5);
+let stereoOsc = new Tone.Oscillator(448, "sine").chain(stereoPanner, masterVolume, Tone.Master);
+// --------------------------------------------------------
+// Parse Data, Update Audio playback
+// --------------------------------------------------------
+const updateOscData = (data, osc) => {
+    osc.frequency.value = data.freq;
+}
+
+/**
+ * receives touch data and converts to frequency and stereo pan
+ * updates active tone information and updates user display
+ * @param {Object} data touch X/Y coordinates
+ */
+const parseTouchData = (data) => {
+    // touch Y as a percentage 0/100
     let freq = (data.userY / window.screen.height).toFixed(2);
+    // limit at edges
     if(freq > 1) freq = 1;
     if(freq < 0) freq = 0;
+    // min/max 0 - 10,000
     freq = 10000 - Math.floor(freq * 10000);
+    // logarithmic scale ??
+    // f(x) = x^(1/1.6) * log10(x), x=1 to 10000
+    freq = Math.floor( Math.pow(freq,1/1.6) * Math.log10(freq) ) ;
+
     activeData.freq = freq;
 
     let pan = (data.userX / window.screen.width).toFixed(2);
@@ -34,19 +66,22 @@ const updateData = (data) => {
     }
     activeData.pan = pan;
 
+    updateOscData({
+        freq: activeData.freq,
+        pan: activeData.pan
+    }, stereoOsc);
 
+    
 
-    updateDisplay({
+    setDisplayData({
         freq: activeData.freq,
         pan: activeData.pan
     });
 }
 
-const updateDisplay = (data) => {
+const setDisplayData = (data) => {
     activeFrequencyDisplay.innerText = data.freq;
     activePanDisplay.innerText = data.pan;
-
-    // pan < 0 ? activePanUnitDisplay.innerText = 'L' : activePanUnitDisplay.innerText = 'R';
 }
 
 const killTouchHaptic = (index, haptic) => {
@@ -58,14 +93,11 @@ const killTouchHaptic = (index, haptic) => {
     // wait until there are no touches then splice the whole arr
     
 }
-
+// --------------------------------------------------------
+// Event Handlers
+// --------------------------------------------------------
 const createTouchHaptic = (e) => {
-     // console.log('start')
-    // console.log(e);
-    // console.log('X: ' + e.touches[0].clientX);
-    // console.log('Y: ' + e.touches[0].clientY);
-
-    updateData({
+    parseTouchData({
         userY: e.touches[0].clientY,
         userX: e.touches[0].clientX
     })
@@ -101,15 +133,18 @@ const createTouchHaptic = (e) => {
         // }, 1000);
     }
 
-    addHapticEffect.then(addHapticAnim).then()
+    addHapticEffect.then(addHapticAnim)
     
     touchHapticContainer.style.display = 'block';
     touchHapticContainer.style.left = e.touches[0].clientX + 'px';
     touchHapticContainer.style.top = e.touches[0].clientY + 'px';
 }
 
+
 const handleStart = (e)=> {
    createTouchHaptic(e);
+
+   stereoOsc.start();
 }
 
 const handleMove = (e)=> {
@@ -118,7 +153,7 @@ const handleMove = (e)=> {
     touchHapticArray[touchHapticArray.length-1].style.left = e.touches[0].clientX + 'px';
     touchHapticArray[touchHapticArray.length-1].style.top = e.touches[0].clientY + 'px';
 
-    updateData({
+    parseTouchData({
         userY: e.touches[0].clientY,
         userX: e.touches[0].clientX
     })
@@ -126,8 +161,10 @@ const handleMove = (e)=> {
 
 const handleEnd = (e)=> {
     // console.log('end')
+    stereoOsc.stop();
+
     const touchHapticIndex = touchHapticArray.length-1;
-    const touchHapticContainer = touchHapticArray[touchHapticArray.length-1]
+    const touchHapticContainer = touchHapticArray[touchHapticArray.length-1];
 
     killTouchHaptic(touchHapticIndex, touchHapticContainer)
 
@@ -135,6 +172,9 @@ const handleEnd = (e)=> {
 
 const handleCancel = (e)=> {
     // console.log('cancel')
+    stereoOsc.stop();
+
+
     const touchHapticIndex = touchHapticArray.length-1;
     const touchHapticContainer = touchHapticArray[touchHapticArray.length-1]
 
