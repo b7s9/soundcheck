@@ -40,15 +40,30 @@ const updateOscData = (data, osc) => {
 const parseTouchData = (data) => {
     // touch Y as a percentage 0/100
     let freq = (data.userY / window.screen.height).toFixed(2);
+    // invert Y scale
+    freq = 1 - freq;
     // limit at edges
     if(freq > 1) freq = 1;
     if(freq < 0) freq = 0;
-    // min/max 0 - 10,000
-    freq = 10000 - Math.floor(freq * 10000);
-    // logarithmic scale ??
-    // f(x) = x^(1/1.6) * log10(x), x=1 to 10000
-    freq = Math.floor( Math.pow(freq,1/1.6) * Math.log10(freq) ) ;
+    // console.log('Y percent: '+freq.toFixed(2))
 
+    // this yields a curve that expands the high frequencies 
+    // freq = (2 - ( -Math.log10(freq) ))/2 ;
+
+    // this yields a curve that favors the low frequencies
+    freq = ( Math.pow(freq, 3) ) ;
+
+    // if I can invert this S curve (sigmoid) it would be ideal
+    // freq = 1 / (1 + Math.exp(-freq))
+    
+    // console.log('log10(y): ' +freq.toFixed(2))
+    
+    freq = Math.floor(freq * 10000);
+    // console.log(freq)
+
+    if(freq > 20000) freq = 20000;
+    if(freq < 0) freq = 0;
+    
     activeData.freq = freq;
 
     let pan = (data.userX / window.screen.width).toFixed(2);
@@ -71,8 +86,6 @@ const parseTouchData = (data) => {
         pan: activeData.pan
     }, stereoOsc);
 
-    
-
     setDisplayData({
         freq: activeData.freq,
         pan: activeData.pan
@@ -90,8 +103,7 @@ const killTouchHaptic = (index, haptic) => {
     haptic.remove();
     touchHapticArray[index] = undefined;
     // touchHapticArray could become very large.
-    // wait until there are no touches then splice the whole arr
-    
+    // wait until there are no touches then splice the whole arr    
 }
 // --------------------------------------------------------
 // Event Handlers
@@ -105,19 +117,7 @@ const createTouchHaptic = (e) => {
     const touchHapticContainer = document.createElement('div');
     touchHapticContainer.classList.add('touch-haptic');
 
-    // const touchHapticInner = document.createElement('div');
-    // touchHapticInner.classList.add('touch-haptic');
-    // touchHapticInner.classList.add('inner');
-    // touchHapticContainer.appendChild(touchHapticInner);
-
     touchHapticArray.push(touchHapticContainer);
-
-    // let touchData = {
-    //     container: touchHapticContainer        
-    // }
-    
-    // const touchHapticIndex = touchHapticArray.length-1;
-
 
     const addHapticEffect = new Promise ((resolve, reject) => {
         e.target.appendChild(touchHapticContainer);
@@ -139,7 +139,6 @@ const createTouchHaptic = (e) => {
     touchHapticContainer.style.left = e.touches[0].clientX + 'px';
     touchHapticContainer.style.top = e.touches[0].clientY + 'px';
 }
-
 
 const handleStart = (e)=> {
    createTouchHaptic(e);
@@ -166,19 +165,17 @@ const handleEnd = (e)=> {
     const touchHapticIndex = touchHapticArray.length-1;
     const touchHapticContainer = touchHapticArray[touchHapticArray.length-1];
 
-    killTouchHaptic(touchHapticIndex, touchHapticContainer)
-
+    killTouchHaptic(touchHapticIndex, touchHapticContainer);
 }
 
 const handleCancel = (e)=> {
     // console.log('cancel')
     stereoOsc.stop();
 
-
     const touchHapticIndex = touchHapticArray.length-1;
-    const touchHapticContainer = touchHapticArray[touchHapticArray.length-1]
+    const touchHapticContainer = touchHapticArray[touchHapticArray.length-1];
 
-    killTouchHaptic(touchHapticIndex, touchHapticContainer)
+    killTouchHaptic(touchHapticIndex, touchHapticContainer);
 }
 
 body.addEventListener("touchstart", e => { handleStart(e) }, false);
