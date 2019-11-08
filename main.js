@@ -18,6 +18,8 @@ let activeData = {
 
 let touchHapticArray = [];
 
+let isMousedown = 0;
+
 // --------------------------------------------------------
 // Tone.js Global Variables
 // --------------------------------------------------------
@@ -140,50 +142,65 @@ const createTouchHaptic = (e) => {
     touchHapticContainer.style.top = e.touches[0].clientY + 'px';
 }
 
-const handleStart = (e)=> {
-   createTouchHaptic(e);
+const handleStart = (e, isTouchEvent)=> {
+    if(isTouchEvent){
+        createTouchHaptic(e);
+    }
 
    stereoOsc.start();
 }
 
-const handleMove = (e)=> {
+const handleMove = (e, isTouchEvent)=> {
     // console.log('move')
     e.preventDefault(); 
-    touchHapticArray[touchHapticArray.length-1].style.left = e.touches[0].clientX + 'px';
-    touchHapticArray[touchHapticArray.length-1].style.top = e.touches[0].clientY + 'px';
+    if(isTouchEvent){
+        touchHapticArray[touchHapticArray.length-1].style.left = e.touches[0].clientX + 'px';
+        touchHapticArray[touchHapticArray.length-1].style.top = e.touches[0].clientY + 'px';
 
-    parseTouchData({
-        userY: e.touches[0].clientY,
-        userX: e.touches[0].clientX
-    })
+        parseTouchData({
+            userY: e.touches[0].clientY,
+            userX: e.touches[0].clientX
+        })
+    }else{
+        parseTouchData({
+            userY: e.clientY,
+            userX: e.clientX
+        })
+    }
+
 }
 
-const handleEnd = (e)=> {
+const handleEnd = (e, isTouchEvent)=> {
     // console.log('end')
     stereoOsc.stop();
 
-    const touchHapticIndex = touchHapticArray.length-1;
-    const touchHapticContainer = touchHapticArray[touchHapticArray.length-1];
+    if(isTouchEvent){
 
-    killTouchHaptic(touchHapticIndex, touchHapticContainer);
+        const touchHapticIndex = touchHapticArray.length-1;
+        const touchHapticContainer = touchHapticArray[touchHapticArray.length-1];
+    
+        killTouchHaptic(touchHapticIndex, touchHapticContainer);
+    }
 }
 
-const handleCancel = (e)=> {
+const handleCancel = (e, isTouchEvent)=> {
     // console.log('cancel')
     stereoOsc.stop();
 
-    const touchHapticIndex = touchHapticArray.length-1;
-    const touchHapticContainer = touchHapticArray[touchHapticArray.length-1];
+    if(isTouchEvent){
+        const touchHapticIndex = touchHapticArray.length-1;
+        const touchHapticContainer = touchHapticArray[touchHapticArray.length-1];
+    
+        killTouchHaptic(touchHapticIndex, touchHapticContainer);
+    }
 
-    killTouchHaptic(touchHapticIndex, touchHapticContainer);
 }
 
-body.addEventListener("touchstart", e => { handleStart(e) }, false);
-body.addEventListener("touchend", handleEnd, false);
-body.addEventListener("touchcancel", handleCancel, false);
-body.addEventListener("touchmove", handleMove, { passive: false });
+body.addEventListener("touchstart", e => { handleStart(e, true) }, false);
+body.addEventListener("touchend", e => {handleEnd(e, true)}, false);
+body.addEventListener("touchmove", e => {handleMove(e, true)}, { passive: false });
+body.addEventListener("touchcancel", e => {handleCancel(e, true)}, false);
 
-// body.addEventListener("mousedown", e => { handleStart(e) }, false);
-// body.addEventListener("mouseup", handleEnd, false);
-// // body.addEventListener("touchcancel", handleCancel, false);
-// body.addEventListener("mousemove", handleMove, false);
+body.addEventListener("mousedown", e => { handleStart(e, false) }, false);
+body.addEventListener("mouseup", e => {handleEnd(e, false)}, false);
+body.addEventListener("mousemove", e => {handleMove(e, false)}, { passive: false });
