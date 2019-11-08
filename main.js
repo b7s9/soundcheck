@@ -110,11 +110,19 @@ const killTouchHaptic = (index, haptic) => {
 // --------------------------------------------------------
 // Event Handlers
 // --------------------------------------------------------
-const createTouchHaptic = (e) => {
-    parseTouchData({
-        userY: e.touches[0].clientY,
-        userX: e.touches[0].clientX
-    })
+const createTouchHaptic = (e, isTouchEvent) => {
+    if(isTouchEvent){
+        parseTouchData({
+            userY: e.touches[0].clientY,
+            userX: e.touches[0].clientX
+        })
+    }else{
+        parseTouchData({
+            userY: e.clientY,
+            userX: e.clientX
+        })
+    }
+    
 
     const touchHapticContainer = document.createElement('div');
     touchHapticContainer.classList.add('touch-haptic');
@@ -138,34 +146,45 @@ const createTouchHaptic = (e) => {
     addHapticEffect.then(addHapticAnim)
     
     touchHapticContainer.style.display = 'block';
-    touchHapticContainer.style.left = e.touches[0].clientX + 'px';
-    touchHapticContainer.style.top = e.touches[0].clientY + 'px';
+
+    if(isTouchEvent){
+        touchHapticContainer.style.left = e.touches[0].clientX + 'px';
+        touchHapticContainer.style.top = e.touches[0].clientY + 'px';
+    }else{
+        touchHapticContainer.style.left = e.clientX + 'px';
+        touchHapticContainer.style.top = e.clientY + 'px';
+    }
 }
 
-const handleStart = (e, isTouchEvent)=> {
-    if(isTouchEvent){
-        createTouchHaptic(e);
-    }
+const handleStart = (e, isTouchEvent)=> {    
+    createTouchHaptic(e, isTouchEvent);
 
-   stereoOsc.start();
+    stereoOsc.start();
 }
 
 const handleMove = (e, isTouchEvent)=> {
     // console.log('move')
     e.preventDefault(); 
     if(isTouchEvent){
-        touchHapticArray[touchHapticArray.length-1].style.left = e.touches[0].clientX + 'px';
-        touchHapticArray[touchHapticArray.length-1].style.top = e.touches[0].clientY + 'px';
 
         parseTouchData({
             userY: e.touches[0].clientY,
             userX: e.touches[0].clientX
-        })
+        });
+        if(typeof touchHapticArray[touchHapticArray.length-1] !== "undefined"){        
+            touchHapticArray[touchHapticArray.length-1].style.left = e.touches[0].clientX + 'px';
+            touchHapticArray[touchHapticArray.length-1].style.top = e.touches[0].clientY + 'px';
+        }
+
     }else{
         parseTouchData({
             userY: e.clientY,
             userX: e.clientX
-        })
+        });
+        if(typeof touchHapticArray[touchHapticArray.length-1] !== "undefined"){
+            touchHapticArray[touchHapticArray.length-1].style.left = e.clientX + 'px';
+            touchHapticArray[touchHapticArray.length-1].style.top = e.clientY + 'px';
+        }
     }
 
 }
@@ -174,25 +193,25 @@ const handleEnd = (e, isTouchEvent)=> {
     // console.log('end')
     stereoOsc.stop();
 
-    if(isTouchEvent){
+    // if(isTouchEvent){
 
         const touchHapticIndex = touchHapticArray.length-1;
         const touchHapticContainer = touchHapticArray[touchHapticArray.length-1];
     
         killTouchHaptic(touchHapticIndex, touchHapticContainer);
-    }
+    // }
 }
 
 const handleCancel = (e, isTouchEvent)=> {
     // console.log('cancel')
     stereoOsc.stop();
 
-    if(isTouchEvent){
+    // if(isTouchEvent){
         const touchHapticIndex = touchHapticArray.length-1;
         const touchHapticContainer = touchHapticArray[touchHapticArray.length-1];
     
         killTouchHaptic(touchHapticIndex, touchHapticContainer);
-    }
+    // }
 
 }
 
