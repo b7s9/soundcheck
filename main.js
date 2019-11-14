@@ -3,7 +3,6 @@
 // --------------------------------------------------------
 const body = document.querySelector('body');
 let activeFrequencyDisplay = document.querySelector('.info div.active-frequency span.data');
-// const activeFrequencyUnitDisplay = document.querySelector('.info div.active-frequency span.unit');
 
 let activePanDisplay = document.querySelector('.info div.active-pan span.data');
 let activePanUnitDisplay = document.querySelector('.info div.active-pan span.unit');
@@ -113,7 +112,7 @@ const killTouchHaptic = (index, haptic) => {
     // wait until there are no touches then splice the whole arr    
 }
 // --------------------------------------------------------
-// Event Handlers
+// View Updaters
 // --------------------------------------------------------
 const createTouchHaptic = (e, isTouchEvent) => {
     
@@ -143,9 +142,6 @@ const createTouchHaptic = (e, isTouchEvent) => {
 
     const addHapticAnim = () => {
         touchHapticContainer.classList.add('anim')
-        // setTimeout(() => {
-        //     killTouchHaptic(touchHapticIndex, touchHapticContainer)
-        // }, 1000);
     }
 
     addHapticEffect.then(addHapticAnim)
@@ -161,8 +157,35 @@ const createTouchHaptic = (e, isTouchEvent) => {
     }
 }
 
+const updateBGC = (touchCoordinates) => {
+    let userY = (touchCoordinates.userY / window.screen.height).toFixed(2);
+    let userX = (touchCoordinates.userX / window.screen.width).toFixed(2);
+    
+    userY = String(userY * 100) + '%';
+
+    body.style.backgroundPositionY = userY;
+}
+
+// --------------------------------------------------------
+// Event Handlers
+// --------------------------------------------------------
+
 const handleStart = (e, isTouchEvent)=> {    
     createTouchHaptic(e, isTouchEvent);
+
+    if(isTouchEvent){
+
+        updateBGC({
+            userY: e.touches[0].clientY,
+            userX: e.touches[0].clientX
+        });
+
+    }else{
+        updateBGC({
+            userY: e.clientY,
+            userX: e.clientX
+        });        
+    }
 
     stereoOsc.start();
     ampEnv.triggerAttack();
@@ -182,6 +205,11 @@ const handleMove = (e, isTouchEvent)=> {
             touchHapticArray[touchHapticArray.length-1].style.top = e.touches[0].clientY + 'px';
         }
 
+        updateBGC({
+            userY: e.touches[0].clientY,
+            userX: e.touches[0].clientX
+        });
+
     }else{
         parseTouchData({
             userY: e.clientY,
@@ -191,6 +219,11 @@ const handleMove = (e, isTouchEvent)=> {
             touchHapticArray[touchHapticArray.length-1].style.left = e.clientX + 'px';
             touchHapticArray[touchHapticArray.length-1].style.top = e.clientY + 'px';
         }
+
+        updateBGC({
+            userY: e.clientY,
+            userX: e.clientX
+        });        
     }
 }
 
@@ -219,12 +252,12 @@ const handleCancel = (e, isTouchEvent)=> {
     // }
 
 }
-
+// touch events
 body.addEventListener("touchstart", e => { handleStart(e, true) }, false);
 body.addEventListener("touchend", e => {handleEnd(e, true)}, false);
 body.addEventListener("touchmove", e => {handleMove(e, true)}, { passive: false });
 body.addEventListener("touchcancel", e => {handleCancel(e, true)}, false);
-
+// mouse events
 body.addEventListener("mousedown", e => { handleStart(e, false) }, false);
 body.addEventListener("mouseup", e => {handleEnd(e, false)}, false);
 body.addEventListener("mousemove", e => {handleMove(e, false)}, { passive: false });
