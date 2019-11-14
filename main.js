@@ -30,8 +30,9 @@ let stereoOsc = new Tone.Oscillator(448, "sine").chain(stereoPanner, masterVolum
 // --------------------------------------------------------
 // Parse Data, Update Audio playback
 // --------------------------------------------------------
-const updateOscData = (data, osc) => {
+const updateOscData = (data, osc, panner) => {
     osc.frequency.value = data.freq;
+    panner.pan.value = data.pan;
 }
 
 /**
@@ -47,18 +48,15 @@ const parseTouchData = (data) => {
     // limit at edges
     if(freq > 1) freq = 1;
     if(freq < 0) freq = 0;
-    // console.log('Y percent: '+freq.toFixed(2))
 
     // this yields a curve that expands the high frequencies 
     // freq = (2 - ( -Math.log10(freq) ))/2 ;
 
-    // this yields a curve that favors the low frequencies
+    // this yields a curve that expands the low frequencies
     freq = ( Math.pow(freq, 3) ) ;
 
     // if I can invert this S curve (sigmoid) it would be ideal
     // freq = 1 / (1 + Math.exp(-freq))
-    
-    // console.log('log10(y): ' +freq.toFixed(2))
     
     freq = Math.floor(freq * 10000);
     // console.log(freq)
@@ -81,12 +79,13 @@ const parseTouchData = (data) => {
         // pan = Math.floor(pan  * 64);
         activePanUnitDisplay.innerText = 'R';
     }
+
     activeData.pan = pan;
 
     updateOscData({
         freq: activeData.freq,
         pan: activeData.pan
-    }, stereoOsc);
+    }, stereoOsc, stereoPanner);
 
     setDisplayData({
         freq: activeData.freq,
@@ -111,6 +110,7 @@ const killTouchHaptic = (index, haptic) => {
 // Event Handlers
 // --------------------------------------------------------
 const createTouchHaptic = (e, isTouchEvent) => {
+    
     if(isTouchEvent){
         parseTouchData({
             userY: e.touches[0].clientY,
@@ -121,8 +121,7 @@ const createTouchHaptic = (e, isTouchEvent) => {
             userY: e.clientY,
             userX: e.clientX
         })
-    }
-    
+    }    
 
     const touchHapticContainer = document.createElement('div');
     touchHapticContainer.classList.add('touch-haptic');
@@ -186,7 +185,6 @@ const handleMove = (e, isTouchEvent)=> {
             touchHapticArray[touchHapticArray.length-1].style.top = e.clientY + 'px';
         }
     }
-
 }
 
 const handleEnd = (e, isTouchEvent)=> {
