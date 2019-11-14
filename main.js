@@ -26,7 +26,13 @@ let isMousedown = 0;
 Tone.Transport.toggle(); //start the transport
 let masterVolume = new Tone.Volume(-12);
 let stereoPanner = new Tone.Panner(0.5);
-let stereoOsc = new Tone.Oscillator(448, "sine").chain(stereoPanner, masterVolume, Tone.Master);
+let ampEnv = new Tone.AmplitudeEnvelope({
+	"attack": 0.08,
+	"decay": 0.2,
+	"sustain": 1.0,
+	"release": 0.5
+})
+let stereoOsc = new Tone.Oscillator(448, "sine").chain(stereoPanner, ampEnv, masterVolume, Tone.Master);
 // --------------------------------------------------------
 // Parse Data, Update Audio playback
 // --------------------------------------------------------
@@ -159,6 +165,7 @@ const handleStart = (e, isTouchEvent)=> {
     createTouchHaptic(e, isTouchEvent);
 
     stereoOsc.start();
+    ampEnv.triggerAttack();
 }
 
 const handleMove = (e, isTouchEvent)=> {
@@ -189,8 +196,8 @@ const handleMove = (e, isTouchEvent)=> {
 
 const handleEnd = (e, isTouchEvent)=> {
     // console.log('end')
-    stereoOsc.stop();
-
+    ampEnv.triggerRelease();
+    
     // if(isTouchEvent){
 
         const touchHapticIndex = touchHapticArray.length-1;
@@ -202,8 +209,8 @@ const handleEnd = (e, isTouchEvent)=> {
 
 const handleCancel = (e, isTouchEvent)=> {
     // console.log('cancel')
-    stereoOsc.stop();
-
+    ampEnv.triggerRelease();
+    
     // if(isTouchEvent){
         const touchHapticIndex = touchHapticArray.length-1;
         const touchHapticContainer = touchHapticArray[touchHapticArray.length-1];
