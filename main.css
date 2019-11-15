@@ -120,12 +120,14 @@ div.info div.live-data {
 
 @media only screen and (orientation:portrait) {
 	body {
-		background: linear-gradient(270deg, #b1418c, #b1551b, #b1971b, #b1418c);
-		background-size: 800% 800%;
-
-		-webkit-animation: rightColorAnim 31s ease infinite;
+		background: linear-gradient(180deg, #b1418c, #b1551b, #b1971b, #b1418c);
+		background-size: 500% 500%;
+		
+		background-position: 0% 0%;
+		/* -webkit-animation: rightColorAnim 31s ease infinite;
 		-moz-animation: rightColorAnim 31s ease infinite;
-		animation: rightColorAnim 31s ease infinite;
+		animation: rightColorAnim 31s ease infinite; */
+
 	}
 
 	.icons {
@@ -145,12 +147,13 @@ div.info div.live-data {
 
 @media only screen and (orientation:landscape) {
 	body {
-		background: linear-gradient(270deg, #4741b1, #197a2c, #1b9870, #4741b1);
-		background-size: 800% 800%;
+		background: linear-gradient(180deg, #4741b1, #197a2c, #1b9870, #4741b1);
+		background-size: 500% 500%;
 
-		-webkit-animation: leftColorAnim 32s ease infinite;
+		background-position: 0% 0%;
+		/* -webkit-animation: leftColorAnim 32s ease infinite;
 		-moz-animation: leftColorAnim 32s ease infinite;
-		animation: leftColorAnim 32s ease infinite;
+		animation: leftColorAnim 32s ease infinite; */
 		
 	}
 
