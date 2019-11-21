@@ -84,6 +84,10 @@ body.startup {
 									supported by Chrome, Opera and Firefox */
 }
 
+.inactive {
+	display: none;
+}
+
 /* ---------- App page ---------- */
 
 nav {
@@ -146,6 +150,28 @@ div.info div.live-data .unit {
 	opacity: 0.7;
 }
 
+div.info div.live-data.active-waveshape .icons {
+	display: inline-block;
+	width: 25%;
+}
+
+div.info div.live-data.active-waveshape .icons * {
+	display: inline-block;
+}
+
+div.info div.live-data.active-waveshape .icons .right {
+	float: right;
+}
+
+div.info div.live-data.active-waveshape .spacer {
+	display: block;
+	width: 100%;
+}
+
+div.info div.live-data.active-waveshape .slider {
+	width: 25%;
+}
+
 /* ---------- Startup page ---------- */
 
 div.startup {
@@ -193,16 +219,16 @@ div.startup p {
 		background-size: 500% 500%;	
 	}
 
-	.icons {
+	nav .icons {
 		margin: 1rem auto;
 		
 	}
 
-	.icons .speaker {
+	nav .icons .speaker {
 		display: block;
 	}
 
-	.icons .volume {
+	nav .icons .volume {
 		display: none;
 	}
 
@@ -216,11 +242,11 @@ div.startup p {
 		
 	}
 
-	.icons .speaker {
+	nav .icons .speaker {
 		display: none;
 	}
 
-	.icons .volume {
+	nav .icons .volume {
 		display: block;
 	}
 
