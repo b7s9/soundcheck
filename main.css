@@ -142,6 +142,10 @@ div.info div.live-data {
 	opacity: 0.8;
 }
 
+div.info div.live-data .unit {
+	opacity: 0.7;
+}
+
 /* ---------- Startup page ---------- */
 
 div.startup {

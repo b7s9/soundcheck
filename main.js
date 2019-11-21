@@ -99,6 +99,11 @@ const parseTouchData = (data) => {
 }
 
 const setDisplayData = (data) => {
+    if(data.freq >= 1000){
+        // round out the number so it looks prettier
+        data.freq = String( Math.round( (data.freq / 100).toFixed(1) ) / 10 ) + 'k';
+    }
+
     activeFrequencyDisplay.innerText = data.freq;
     activePanDisplay.innerText = data.pan;
 }
@@ -159,7 +164,7 @@ const createTouchHaptic = (e, isTouchEvent) => {
 
 const updateBGC = (touchCoordinates) => {
     let userY = (touchCoordinates.userY / window.screen.height).toFixed(2);
-    let userX = (touchCoordinates.userX / window.screen.width).toFixed(2);
+    // let userX = (touchCoordinates.userX / window.screen.width).toFixed(2);
     
     userY = String(userY * 100) + '%';
 
