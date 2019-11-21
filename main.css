@@ -32,6 +32,22 @@
     100%{background-position:0% 50%}
 }
 
+@-webkit-keyframes vertColorAnim {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@-moz-keyframes vertColorAnim {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@keyframes vertColorAnim {
+    0%{background-position:50% 0%}
+    50%{background-position:50% 100%}
+    100%{background-position:50% 00%}
+}
+
 
 
 html {
@@ -50,6 +66,12 @@ body {
 	overflow: hidden;
 	position: fixed;
 	width: 100%;
+}
+
+body.startup {
+	-webkit-animation: vertColorAnim 32s cubic-bezier(.45,.05,.55,.95) infinite;
+	-moz-animation: vertColorAnim 32s cubic-bezier(.45,.05,.55,.95) infinite;
+	animation: vertColorAnim 32s cubic-bezier(.45,.05,.55,.95) infinite;
 }
 
 .no-select {
@@ -121,13 +143,8 @@ div.info div.live-data {
 @media only screen and (orientation:portrait) {
 	body {
 		background: linear-gradient(180deg, #b1418c, #b1551b, #b1971b, #b1418c);
-		background-size: 500% 500%;
-		
-		background-position: 0% 0%;
-		/* -webkit-animation: rightColorAnim 31s ease infinite;
-		-moz-animation: rightColorAnim 31s ease infinite;
-		animation: rightColorAnim 31s ease infinite; */
-
+		background-position: 0% 0%;		
+		background-size: 500% 500%;	
 	}
 
 	.icons {
@@ -149,11 +166,7 @@ div.info div.live-data {
 	body {
 		background: linear-gradient(180deg, #4741b1, #197a2c, #1b9870, #4741b1);
 		background-size: 500% 500%;
-
-		background-position: 0% 0%;
-		/* -webkit-animation: leftColorAnim 32s ease infinite;
-		-moz-animation: leftColorAnim 32s ease infinite;
-		animation: leftColorAnim 32s ease infinite; */
+		background-position: 0% 0%;		
 		
 	}
 

@@ -1,0 +1,154 @@
+<html lang="en">
+
+<head>
+  <title>Soundcheck</title>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+
+  <link rel="manifest" href="manifest.webmanifest">
+
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Soundcheck">
+  <meta name="apple-mobile-web-app-title" content="Soundcheck">
+  <meta name="theme-color" content="#000">
+  <meta name="msapplication-navbutton-color" content="#000">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="msapplication-starturl" content="index.html">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="normalize.css">
+  <link rel="stylesheet" href="add2home.css">
+  <link rel="stylesheet" href="main.css">
+  
+  <!-- **** ICONS **** -->
+  <link rel="apple-touch-icon" sizes="57x57" href="favicon.ico/apple-icon-57x57.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="favicon.ico/apple-icon-60x60.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="favicon.ico/apple-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="favicon.ico/apple-icon-76x76.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="favicon.ico/apple-icon-114x114.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="favicon.ico/apple-icon-120x120.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="favicon.ico/apple-icon-144x144.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="favicon.ico/apple-icon-152x152.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="favicon.ico/apple-icon-180x180.png">
+	<link rel="icon" type="image/png" sizes="192x192"  href="favicon.ico/android-icon-192x192.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="favicon.ico/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="favicon.ico/favicon-96x96.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="favicon.ico/favicon-16x16.png">
+	<link rel="manifest" href="favicon.ico/manifest.json">
+	<meta name="msapplication-TileColor" content="#ffffff">
+	<meta name="msapplication-TileImage" content="favicon.ico/ms-icon-144x144.png">
+	<meta name="theme-color" content="#ffffff">
+  <!-- scripts -->
+  <script>
+    function goToURI(slug) {
+      location.href = slug;
+    }
+  </script>
+  
+  <style>
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+  </style>
+</head>
+
+<body class="no-select">
+  <!-- PAGE CONTENT -->
+  <main>
+    <div class="info">
+      <div class="active-frequency live-data" aria-label="Active Frequency">
+        <span class="data">0</span>
+        <span class="unit">hz</span>
+      </div>
+      <div class="active-pan live-data" aria-label="Active Stereo Pan">
+        <span class="data">0</span>
+        <span class="unit">L</span>
+      </div>
+    </div>
+  </main>
+  <nav>
+    <ul>
+      <li class="waveform">
+        <button>
+          <svg width="60px" height="37px" viewBox="0 0 60 37" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+              <!-- <title>waveform</title> -->
+              <g id="phone" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                  <g id="Notice-Copy" transform="translate(-22.000000, -513.000000)" stroke="#FFFFFF" stroke-width="7">
+                      <path d="M26,531.50912 C26,512.163627 51.8772797,512.163627 51.8772797,531.50912 C51.8772797,550.854613 78.0487114,550.829478 78.0487114,531.50912" id="waveform"></path>
+                  </g>
+              </g>
+          </svg>
+        </button>
+      </li>
+      <li class="pan active">
+        <button>
+          <svg width="76px" height="36px" viewBox="0 0 76 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <!-- <title>stereo-pan</title> -->
+            <g id="phone" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                <g id="Notice-Copy" transform="translate(-122.000000, -514.000000)" fill="#FFFFFF">
+                    <g id="stereo-pan" transform="translate(122.000000, 514.000000)">
+                        <path d="M75.194288,15.4688485 L64.3375271,1.06865149 C63.7996431,0.35602014 63.1637189,0 62.4291603,0 C61.6940075,0 61.0576377,0.35602014 60.5197536,1.06865149 C59.983058,1.78108581 59.7146359,2.6247373 59.7146359,3.59980298 L59.7146359,10.800394 L16.2859583,10.800394 L16.2859583,3.59980298 C16.2859583,2.6247373 16.0172391,1.78108581 15.4799493,1.06865149 C14.9423623,0.35602014 14.306141,0 13.5711368,0 C12.8362811,0 12.2000598,0.35602014 11.6627699,1.06865149 L0.805711974,15.4688485 C0.268719204,16.1808888 0,17.0251313 0,18 C0,18.9746716 0.268719204,19.8189142 0.805711974,20.5307574 L11.6627699,34.9313485 C12.2000598,35.6431918 12.8358355,36 13.5711368,36 C14.3067352,36 14.9428079,35.6431918 15.4799493,34.9313485 C16.0172391,34.2193082 16.2859583,33.3752627 16.2859583,32.400197 L16.2859583,25.1992119 L59.7146359,25.1992119 L59.7146359,32.400197 C59.7146359,33.3750657 59.983058,34.2191112 60.5197536,34.9313485 C61.0576377,35.6431918 61.6940075,36 62.4291603,36 C63.1635703,36 63.7996431,35.6431918 64.3375271,34.9313485 L75.194288,20.5307574 C75.7315779,19.8189142 76,18.9746716 76,18 C75.9998515,17.0251313 75.7315779,16.1808888 75.194288,15.4688485 Z" id="Path"></path>
+                    </g>
+                </g>
+            </g>
+          </svg>
+        </button>
+      </li>
+      <li class="mic">
+        <button>
+          <svg width="32px" height="40px" viewBox="0 0 32 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <!-- <title>microphone</title> -->
+          <g id="phone" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <g id="Notice-Copy" transform="translate(-250.000000, -512.000000)" fill="#FFFFFF">
+                  <g id="microphone" transform="translate(250.000000, 512.000000)">
+                      <path d="M26.6666667,15 L26.6666667,17.4999929 C26.6666667,23.0139365 21.8814811,27.4999646 16,27.4999646 C10.1185189,27.4999646 5.33333333,23.0138658 5.33333333,17.4999929 L5.33333333,15 L0,15 L0,17.4999929 C0,24.91773 5.77867036,31.0781516 13.3333333,32.274157 L13.3333333,40 L18.6666667,40 L18.6666667,32.2743692 C26.2221594,31.0788587 32,24.9182957 32,17.5000636 L32,15 L26.6666667,15.0000707 L26.6666667,15 Z" id="Path"></path>
+                      <path d="M16,25 C20.4114314,25 24,21.6357169 24,17.5 L24,7.5 C24,3.36428309 20.4115068,0 16,0 C11.5884932,0 8,3.36428309 8,7.5 L8,17.5 C8,21.6357876 11.5885686,25 16,25 Z" id="Path"></path>
+                  </g>
+              </g>
+          </g>
+          </svg>
+        </button>
+    </li>
+    </ul>
+  </nav>
+  <!-- JAVASCRIPT-->
+  <script src="refresh-manifest.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    // Customize config variable BEFORE loading addToHome.js file
+    var addToHomeConfig = {
+      touchIcon: true
+    }
+  </script>
+  <script src="add2home.js"></script>
+  <script src="Tone.js"></script>
+  <script src="main.js"></script>
+</body>
+
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
