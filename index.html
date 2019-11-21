@@ -89,10 +89,20 @@
 </head>
 
 <body class="startup">
-    <div class="startup">
-        <p class="notice"><strong>Enable</strong> your device audio</p>
-        <button onclick="goToURI('app.html');">Continue</button>
-    </div>
+  <div class="startup">
+      <p class="notice"><strong>Enable</strong> your device audio</p>
+      <button onclick="goToURI('app.html');">Continue</button>
+  </div>
+
+  <!-- JAVASCRIPT-->
+  <script src="refresh-manifest.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    // Customize config variable BEFORE loading addToHome.js file
+    var addToHomeConfig = {
+      touchIcon: true
+    }
+  </script>
+  <script src="add2home.js"></script>
 </body>
 
 </html>
