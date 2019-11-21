@@ -1,4 +1,4 @@
-/* animations */
+/* ---------- animations ---------- */
 /* bg anim */
 @-webkit-keyframes rightColorAnim {
     0%{background-position:0% 50%}
@@ -32,7 +32,23 @@
     100%{background-position:0% 50%}
 }
 
+@-webkit-keyframes vertColorAnim {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@-moz-keyframes vertColorAnim {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@keyframes vertColorAnim {
+    0%{background-position:50% 0%}
+    50%{background-position:50% 100%}
+    100%{background-position:50% 00%}
+}
 
+/* ---------- Main ---------- */
 
 html {
 	background-color: #272727;
@@ -52,6 +68,12 @@ body {
 	width: 100%;
 }
 
+body.startup {
+	-webkit-animation: vertColorAnim 32s cubic-bezier(.45,.05,.55,.95) infinite;
+	-moz-animation: vertColorAnim 32s cubic-bezier(.45,.05,.55,.95) infinite;
+	animation: vertColorAnim 32s cubic-bezier(.45,.05,.55,.95) infinite;
+}
+
 .no-select {
 	-webkit-touch-callout: none; /* iOS Safari */
 	  -webkit-user-select: none; /* Safari */
@@ -61,6 +83,8 @@ body {
 			  user-select: none; /* Non-prefixed version, currently
 									supported by Chrome, Opera and Firefox */
 }
+
+/* ---------- App page ---------- */
 
 nav {
 	bottom: 0;
@@ -118,16 +142,51 @@ div.info div.live-data {
 	opacity: 0.8;
 }
 
+/* ---------- Startup page ---------- */
+
+div.startup {
+	display: block;
+	margin: 0 auto;
+	max-width: 42rem;
+	text-align: center;
+	width: 100%;
+}
+
+div.startup button {
+	background: none;
+	background-color: rgba(0,0,0,0.5);
+	color:white;
+	border: none;
+	border-radius: 1rem;
+	font-weight: 700;
+	outline: none;
+	margin-top: 8rem;
+	padding: 1rem 25%;
+}
+
+div.startup button:hover, div.startup button:focus {
+	background-color: rgba(0,0,0,0.4);
+}
+
+div.startup button:active {
+	background-color: rgba(0,0,0,0.25);
+}
+
+div.startup p {
+	color:white;
+	font-size: 2rem;
+	margin: 0 auto;
+	margin-top: 10rem;
+	width: 70%;
+}
+
+/* ---------- Media queries ---------- */
+
 @media only screen and (orientation:portrait) {
 	body {
 		background: linear-gradient(180deg, #b1418c, #b1551b, #b1971b, #b1418c);
-		background-size: 500% 500%;
-		
-		background-position: 0% 0%;
-		/* -webkit-animation: rightColorAnim 31s ease infinite;
-		-moz-animation: rightColorAnim 31s ease infinite;
-		animation: rightColorAnim 31s ease infinite; */
-
+		background-position: 0% 0%;		
+		background-size: 500% 500%;	
 	}
 
 	.icons {
@@ -149,11 +208,7 @@ div.info div.live-data {
 	body {
 		background: linear-gradient(180deg, #4741b1, #197a2c, #1b9870, #4741b1);
 		background-size: 500% 500%;
-
-		background-position: 0% 0%;
-		/* -webkit-animation: leftColorAnim 32s ease infinite;
-		-moz-animation: leftColorAnim 32s ease infinite;
-		animation: leftColorAnim 32s ease infinite; */
+		background-position: 0% 0%;		
 		
 	}
 
@@ -166,6 +221,8 @@ div.info div.live-data {
 	}
 
 }
+
+/* ---------- Haptic effects ---------- */
 
 .touch-haptic {
 	background-color: #fff;
