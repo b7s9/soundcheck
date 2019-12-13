@@ -309,9 +309,16 @@ const handleMove = (e, isTouchEvent)=> {
             userY: e.touches[0].clientY,
             userX: e.touches[0].clientX
         });
-        if(typeof touchHapticArray[touchHapticArray.length-1] !== "undefined"){        
-            touchHapticArray[touchHapticArray.length-1].style.left = e.touches[0].clientX + 'px';
-            touchHapticArray[touchHapticArray.length-1].style.top = e.touches[0].clientY + 'px';
+        if(typeof touchHapticArray[touchHapticArray.length-1] !== "undefined"){
+            try{
+                window.requestAnimationFrame(function(){
+                    touchHapticArray[touchHapticArray.length-1].style.left = e.touches[0].clientX + 'px';
+                    touchHapticArray[touchHapticArray.length-1].style.top = e.touches[0].clientY + 'px';
+                })
+            } 
+            catch{
+                // client moving too fast
+            }
         }
 
         updateBGC({
@@ -325,8 +332,15 @@ const handleMove = (e, isTouchEvent)=> {
             userX: e.clientX
         });
         if(typeof touchHapticArray[touchHapticArray.length-1] !== "undefined"){
-            touchHapticArray[touchHapticArray.length-1].style.left = e.clientX + 'px';
-            touchHapticArray[touchHapticArray.length-1].style.top = e.clientY + 'px';
+            try{
+                window.requestAnimationFrame(function(){
+                    touchHapticArray[touchHapticArray.length-1].style.left = e.clientX + 'px';
+                    touchHapticArray[touchHapticArray.length-1].style.top = e.clientY + 'px';
+                })
+            }
+            catch{
+                // client moving too fast
+            }
         }
 
         updateBGC({
