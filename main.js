@@ -39,37 +39,51 @@ class appState {
             dynamic: [
                     {
                         name: 'pan',
-                        selector: document.querySelector('div.info.app div.active-pan')
+                        selectors: {
+                            display: document.querySelector('div.info.app div.active-pan'),
+                            navBtn: document.querySelector('nav ul li.pan')
+                        }
                     },
                     {
                         name: 'waveshape',
-                        selector: document.querySelector('div.info.app div.active-waveshape')
+                        selectors: {
+                            display: document.querySelector('div.info.app div.active-waveshape'),
+                            navBtn: document.querySelector('nav ul li.waveshape')
+                        }
                     },
                     {
                         name: 'vocal',
-                        selector: document.querySelector('div.info.app div.active-vocal')
+                        selectors: {
+                            display: document.querySelector('div.info.app div.active-vocal'),
+                            navBtn: document.querySelector('nav ul li.mic')
+                        }
                     }
             ]                        
         };
     }
 
     updateuiComponents(stateName) {
+        
         if(stateName === 'vocal'){
             this.component.frequency.classList.add('inactive');
         }else{
             this.component.frequency.classList.remove('inactive');
         }
-        for (let component of this.component.dynamic) {
-            if(component.name === stateName){
-                component.selector.classList.remove('inactive');
+        
+        for (let stateComponent of this.component.dynamic) {
+            
+            if(stateComponent.name === stateName){
+                stateComponent.selectors.display.classList.remove('inactive');
+                stateComponent.selectors.navBtn.classList.add('active');
             }else{
-                component.selector.classList.add('inactive');
+                stateComponent.selectors.display.classList.add('inactive');
+                stateComponent.selectors.navBtn.classList.remove('active');
             }            
         }
     }
 
     setState() {
-        //remove the octothorpe char
+        //remove the octothorpe char from URI hash
         let uriHash = location.hash.toString().slice(1);
         // set state based on URI hash
         switch (uriHash) {
@@ -101,9 +115,9 @@ let masterVolume = new Tone.Volume(-12);
 let stereoPanner = new Tone.Panner(0.5);
 let ampEnv = new Tone.AmplitudeEnvelope({
 	"attack": 0.08,
-	"decay": 0.2,
+	"decay": 0.2, // arbitrary, since sustain is max
 	"sustain": 1.0,
-	"release": 0.5
+	"release": 0.2
 })
 let stereoOsc = new Tone.Oscillator(448, "sine").chain(stereoPanner, ampEnv, masterVolume, Tone.Master);
 // --------------------------------------------------------
@@ -138,7 +152,6 @@ const parseTouchData = (data) => {
     // freq = 1 / (1 + Math.exp(-freq))
     
     freq = Math.floor(freq * 10000);
-    // console.log(freq)
 
     if(freq > 20000) freq = 20000;
     if(freq < 0) freq = 0;
@@ -238,8 +251,6 @@ const createTouchHaptic = (e, isTouchEvent) => {
 
 const updateBGC = (touchCoordinates) => {
     let userY = (touchCoordinates.userY / window.screen.height).toFixed(2);
-    // let userX = (touchCoordinates.userX / window.screen.width).toFixed(2);
-    
     userY = String(userY * 100) + '%';
     body.style.backgroundPositionY = userY;
 }
@@ -328,7 +339,6 @@ const handleCancel = (e, isTouchEvent)=> {
     
         killTouchHaptic(touchHapticIndex, touchHapticContainer);
     // }
-
 }
 // --------------------------------------------------------
 // Register Event Handlers
@@ -344,8 +354,10 @@ body.addEventListener("mouseup", e => {handleEnd(e, false)}, false);
 body.addEventListener("mousemove", e => {handleMove(e, false)}, { passive: false });
 // window events
 window.addEventListener("hashchange", e => {
-    console.log(app.setState());
+    // console.log(app.setState());
+    app.setState();
 });
 window.addEventListener("load", e => {
-    console.log(app.setState());
+    // console.log(app.setState());
+    app.setState();
 });
