@@ -3,6 +3,7 @@
 // --------------------------------------------------------
 const body = document.querySelector('body');
 let activeFrequencyDisplay = document.querySelector('.info div.active-frequency span.data');
+let activeWaveshapeDisplay = document.querySelector('.info div.active-waveshape input.slider');
 
 let activePanDisplay = document.querySelector('.info div.active-pan span.data');
 let activePanUnitDisplay = document.querySelector('.info div.active-pan span.unit');
@@ -12,12 +13,101 @@ let activePanUnitDisplay = document.querySelector('.info div.active-pan span.uni
 // --------------------------------------------------------
 let activeData = {
     freq: 0,
-    pan: 0
+    pan: 0,
+    partials: 0
 };
 
 let touchHapticArray = [];
-
 let isMousedown = 0;
+
+// --------------------------------------------------------
+// Utility
+// --------------------------------------------------------
+const seturiHash = (hash) => {
+    location.hash = hash;
+    return location.hash;
+}
+
+
+// --------------------------------------------------------
+// App state constructor
+// --------------------------------------------------------
+class appState {
+    constructor() {
+        this.stateName = 'pan';
+        this.component = {
+            container: document.querySelector('div.info.app'),
+            frequency: document.querySelector('div.info.app div.active-frequency'),
+            dynamic: [
+                    {
+                        name: 'pan',
+                        selectors: {
+                            display: document.querySelector('div.info.app div.active-pan'),
+                            navBtn: document.querySelector('nav ul li.pan')
+                        }
+                    },
+                    {
+                        name: 'waveshape',
+                        selectors: {
+                            display: document.querySelector('div.info.app div.active-waveshape'),
+                            navBtn: document.querySelector('nav ul li.waveshape')
+                        }
+                    },
+                    {
+                        name: 'vocal',
+                        selectors: {
+                            display: document.querySelector('div.info.app div.active-vocal'),
+                            navBtn: document.querySelector('nav ul li.mic')
+                        }
+                    }
+            ]                        
+        };
+    }
+
+    updateuiComponents(stateName) {
+        
+        if(stateName === 'vocal'){
+            this.component.frequency.classList.add('inactive');
+        }else{
+            this.component.frequency.classList.remove('inactive');
+        }
+        
+        for (let stateComponent of this.component.dynamic) {
+            
+            if(stateComponent.name === stateName){
+                stateComponent.selectors.display.classList.remove('inactive');
+                stateComponent.selectors.navBtn.classList.add('active');
+            }else{
+                stateComponent.selectors.display.classList.add('inactive');
+                stateComponent.selectors.navBtn.classList.remove('active');
+            }            
+        }
+    }
+
+    setState() {
+        //remove the octothorpe char from URI hash
+        let uriHash = location.hash.toString().slice(1);
+        // set state based on URI hash
+        switch (uriHash) {
+            case 'waveshape':
+                this.stateName = 'waveshape';
+                break;
+            case 'vocal':
+                this.stateName = 'vocal';
+                break;
+            case 'pan':
+                this.stateName = 'pan';
+                break;
+            // there is no err state, only zuul
+            default:
+                this.stateName = 'pan';
+        }
+        this.updateuiComponents(this.stateName);
+        return this.stateName;
+    }
+}
+
+let app = new appState();
 
 // --------------------------------------------------------
 // Tone.js Global Variables
@@ -27,9 +117,9 @@ let masterVolume = new Tone.Volume(-12);
 let stereoPanner = new Tone.Panner(0.5);
 let ampEnv = new Tone.AmplitudeEnvelope({
 	"attack": 0.08,
-	"decay": 0.2,
+	"decay": 0.2, // arbitrary, since sustain is max
 	"sustain": 1.0,
-	"release": 0.5
+	"release": 0.2
 })
 let stereoOsc = new Tone.Oscillator(448, "sine").chain(stereoPanner, ampEnv, masterVolume, Tone.Master);
 // --------------------------------------------------------
@@ -37,7 +127,13 @@ let stereoOsc = new Tone.Oscillator(448, "sine").chain(stereoPanner, ampEnv, mas
 // --------------------------------------------------------
 const updateOscData = (data, osc, panner) => {
     osc.frequency.value = data.freq;
-    panner.pan.value = data.pan;
+
+    if(app.stateName === 'pan'){
+        panner.pan.value = data.pan;
+        osc.partialCount = 1;
+    }else if(app.stateName === 'waveshape'){
+        osc.partialCount = data.partials;
+    }
 }
 
 /**
@@ -47,7 +143,7 @@ const updateOscData = (data, osc, panner) => {
  */
 const parseTouchData = (data) => {
     // touch Y as a percentage 0/100
-    let freq = (data.userY / window.screen.height).toFixed(2);
+    let freq = (data.userY / window.innerHeight).toFixed(2);
     // invert Y scale
     freq = 1 - freq;
     // limit at edges
@@ -64,14 +160,13 @@ const parseTouchData = (data) => {
     // freq = 1 / (1 + Math.exp(-freq))
     
     freq = Math.floor(freq * 10000);
-    // console.log(freq)
 
     if(freq > 20000) freq = 20000;
     if(freq < 0) freq = 0;
     
     activeData.freq = freq;
 
-    let pan = (data.userX / window.screen.width).toFixed(2);
+    let pan = (data.userX / window.innerWidth).toFixed(2);
     if(pan > 1) pan = 1;
     if(pan < 0) pan = 0;
 
@@ -87,9 +182,14 @@ const parseTouchData = (data) => {
 
     activeData.pan = pan;
 
+    if(app.stateName === 'waveshape'){
+        activeData.partials = Math.floor(activeData.pan * 20) + 1;
+    }
+
     updateOscData({
         freq: activeData.freq,
-        pan: activeData.pan
+        pan: activeData.pan,
+        partials: activeData.partials
     }, stereoOsc, stereoPanner);
 
     setDisplayData({
@@ -105,7 +205,14 @@ const setDisplayData = (data) => {
     }
 
     activeFrequencyDisplay.innerText = data.freq;
-    activePanDisplay.innerText = data.pan;
+
+    if(app.stateName === 'pan'){
+        activePanDisplay.innerText = data.pan;
+    }else if(app.stateName === 'waveshape'){
+        activeWaveshapeDisplay.value = Math.floor(data.pan * 100);
+    }
+
+    
 }
 
 const killTouchHaptic = (index, haptic) => {
@@ -164,10 +271,7 @@ const createTouchHaptic = (e, isTouchEvent) => {
 
 const updateBGC = (touchCoordinates) => {
     let userY = (touchCoordinates.userY / window.screen.height).toFixed(2);
-    // let userX = (touchCoordinates.userX / window.screen.width).toFixed(2);
-    
     userY = String(userY * 100) + '%';
-
     body.style.backgroundPositionY = userY;
 }
 
@@ -205,9 +309,16 @@ const handleMove = (e, isTouchEvent)=> {
             userY: e.touches[0].clientY,
             userX: e.touches[0].clientX
         });
-        if(typeof touchHapticArray[touchHapticArray.length-1] !== "undefined"){        
-            touchHapticArray[touchHapticArray.length-1].style.left = e.touches[0].clientX + 'px';
-            touchHapticArray[touchHapticArray.length-1].style.top = e.touches[0].clientY + 'px';
+        if(typeof touchHapticArray[touchHapticArray.length-1] !== "undefined"){
+            try{
+                window.requestAnimationFrame(function(){
+                    touchHapticArray[touchHapticArray.length-1].style.left = e.touches[0].clientX + 'px';
+                    touchHapticArray[touchHapticArray.length-1].style.top = e.touches[0].clientY + 'px';
+                })
+            } 
+            catch{
+                // client moving too fast
+            }
         }
 
         updateBGC({
@@ -221,8 +332,15 @@ const handleMove = (e, isTouchEvent)=> {
             userX: e.clientX
         });
         if(typeof touchHapticArray[touchHapticArray.length-1] !== "undefined"){
-            touchHapticArray[touchHapticArray.length-1].style.left = e.clientX + 'px';
-            touchHapticArray[touchHapticArray.length-1].style.top = e.clientY + 'px';
+            try{
+                window.requestAnimationFrame(function(){
+                    touchHapticArray[touchHapticArray.length-1].style.left = e.clientX + 'px';
+                    touchHapticArray[touchHapticArray.length-1].style.top = e.clientY + 'px';
+                })
+            }
+            catch{
+                // client moving too fast
+            }
         }
 
         updateBGC({
@@ -255,8 +373,10 @@ const handleCancel = (e, isTouchEvent)=> {
     
         killTouchHaptic(touchHapticIndex, touchHapticContainer);
     // }
-
 }
+// --------------------------------------------------------
+// Register Event Handlers
+// --------------------------------------------------------
 // touch events
 body.addEventListener("touchstart", e => { handleStart(e, true) }, false);
 body.addEventListener("touchend", e => {handleEnd(e, true)}, false);
@@ -266,3 +386,12 @@ body.addEventListener("touchcancel", e => {handleCancel(e, true)}, false);
 body.addEventListener("mousedown", e => { handleStart(e, false) }, false);
 body.addEventListener("mouseup", e => {handleEnd(e, false)}, false);
 body.addEventListener("mousemove", e => {handleMove(e, false)}, { passive: false });
+// window events
+window.addEventListener("hashchange", e => {
+    // console.log(app.setState());
+    app.setState();
+});
+window.addEventListener("load", e => {
+    // console.log(app.setState());
+    app.setState();
+});
