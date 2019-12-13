@@ -3,6 +3,7 @@
 // --------------------------------------------------------
 const body = document.querySelector('body');
 let activeFrequencyDisplay = document.querySelector('.info div.active-frequency span.data');
+let activeWaveshapeDisplay = document.querySelector('.info div.active-waveshape input.slider');
 
 let activePanDisplay = document.querySelector('.info div.active-pan span.data');
 let activePanUnitDisplay = document.querySelector('.info div.active-pan span.unit');
@@ -12,7 +13,8 @@ let activePanUnitDisplay = document.querySelector('.info div.active-pan span.uni
 // --------------------------------------------------------
 let activeData = {
     freq: 0,
-    pan: 0
+    pan: 0,
+    partials: 0
 };
 
 let touchHapticArray = [];
@@ -125,7 +127,13 @@ let stereoOsc = new Tone.Oscillator(448, "sine").chain(stereoPanner, ampEnv, mas
 // --------------------------------------------------------
 const updateOscData = (data, osc, panner) => {
     osc.frequency.value = data.freq;
-    panner.pan.value = data.pan;
+
+    if(app.stateName === 'pan'){
+        panner.pan.value = data.pan;
+        osc.partialCount = 1;
+    }else if(app.stateName === 'waveshape'){
+        osc.partialCount = data.partials;
+    }
 }
 
 /**
@@ -135,7 +143,7 @@ const updateOscData = (data, osc, panner) => {
  */
 const parseTouchData = (data) => {
     // touch Y as a percentage 0/100
-    let freq = (data.userY / window.screen.height).toFixed(2);
+    let freq = (data.userY / window.innerHeight).toFixed(2);
     // invert Y scale
     freq = 1 - freq;
     // limit at edges
@@ -158,7 +166,7 @@ const parseTouchData = (data) => {
     
     activeData.freq = freq;
 
-    let pan = (data.userX / window.screen.width).toFixed(2);
+    let pan = (data.userX / window.innerWidth).toFixed(2);
     if(pan > 1) pan = 1;
     if(pan < 0) pan = 0;
 
@@ -174,9 +182,14 @@ const parseTouchData = (data) => {
 
     activeData.pan = pan;
 
+    if(app.stateName === 'waveshape'){
+        activeData.partials = Math.floor(activeData.pan * 20) + 1;
+    }
+
     updateOscData({
         freq: activeData.freq,
-        pan: activeData.pan
+        pan: activeData.pan,
+        partials: activeData.partials
     }, stereoOsc, stereoPanner);
 
     setDisplayData({
@@ -192,7 +205,14 @@ const setDisplayData = (data) => {
     }
 
     activeFrequencyDisplay.innerText = data.freq;
-    activePanDisplay.innerText = data.pan;
+
+    if(app.stateName === 'pan'){
+        activePanDisplay.innerText = data.pan;
+    }else if(app.stateName === 'waveshape'){
+        activeWaveshapeDisplay.value = Math.floor(data.pan * 100);
+    }
+
+    
 }
 
 const killTouchHaptic = (index, haptic) => {
