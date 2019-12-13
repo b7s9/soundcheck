@@ -56,7 +56,7 @@
 <body class="no-select">
   <!-- PAGE CONTENT -->
   <main>
-    <div class="info">
+    <div class="info app">
       <div class="active-frequency live-data">
         <span class="unit">hz</span>
         <span class="data">0</span>
@@ -90,12 +90,19 @@
         <input type="range" min="1" max="100" value="50" class="slider">
 
       </div>
+      <div class="active-vocal inactive">
+        <ul>
+          <li class="high"><button>High End</button></li>
+          <li class="mid"><button>Mids</button></li>
+          <li class="low"><button>Low End</button></li>
+        </ul>
+      </div>
     </div>
   </main>
   <nav>
     <ul>
-      <li class="waveform">
-        <button>
+      <li class="waveshape">
+        <button onclick="seturiHash('waveshape');">
           <svg width="60px" height="37px" viewBox="0 0 60 37" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
               <!-- <title>waveform</title> -->
               <g id="phone" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -107,7 +114,7 @@
         </button>
       </li>
       <li class="pan active">
-        <button>
+        <button onclick="seturiHash('pan');">
           <svg width="76px" height="36px" viewBox="0 0 76 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <!-- <title>stereo-pan</title> -->
             <g id="phone" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -121,7 +128,7 @@
         </button>
       </li>
       <li class="mic">
-        <button>
+        <button onclick="seturiHash('vocal');">
           <svg width="32px" height="40px" viewBox="0 0 32 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
           <!-- <title>microphone</title> -->
           <g id="phone" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">

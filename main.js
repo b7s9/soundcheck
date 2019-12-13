@@ -16,8 +16,82 @@ let activeData = {
 };
 
 let touchHapticArray = [];
-
 let isMousedown = 0;
+
+// --------------------------------------------------------
+// Utility
+// --------------------------------------------------------
+const seturiHash = (hash) => {
+    location.hash = hash;
+    return location.hash;
+}
+
+
+// --------------------------------------------------------
+// App state constructor
+// --------------------------------------------------------
+class appState {
+    constructor() {
+        this.stateName = 'pan';
+        this.component = {
+            container: document.querySelector('div.info.app'),
+            frequency: document.querySelector('div.info.app div.active-frequency'),
+            dynamic: [
+                    {
+                        name: 'pan',
+                        selector: document.querySelector('div.info.app div.active-pan')
+                    },
+                    {
+                        name: 'waveshape',
+                        selector: document.querySelector('div.info.app div.active-waveshape')
+                    },
+                    {
+                        name: 'vocal',
+                        selector: document.querySelector('div.info.app div.active-vocal')
+                    }
+            ]                        
+        };
+    }
+
+    updateuiComponents(stateName) {
+        if(stateName === 'vocal'){
+            this.component.frequency.classList.add('inactive');
+        }else{
+            this.component.frequency.classList.remove('inactive');
+        }
+        for (let component of this.component.dynamic) {
+            if(component.name === stateName){
+                component.selector.classList.remove('inactive');
+            }else{
+                component.selector.classList.add('inactive');
+            }            
+        }
+    }
+
+    setState() {
+        //remove the octothorpe char
+        let uriHash = location.hash.toString().slice(1);
+        // set state based on URI hash
+        switch (uriHash) {
+            case 'waveshape':
+                this.stateName = 'waveshape';
+                break;
+            case 'vocal':
+                this.stateName = 'vocal';
+                break;
+            case 'pan':
+                this.stateName = 'pan';
+                break;
+            // there is no err state, only zuul
+            default:
+                this.stateName = 'pan';
+        }
+        this.updateuiComponents(this.stateName);
+        return this.stateName;
+    }
+}
+
+let app = new appState();
 
 // --------------------------------------------------------
 // Tone.js Global Variables
@@ -167,7 +241,6 @@ const updateBGC = (touchCoordinates) => {
     // let userX = (touchCoordinates.userX / window.screen.width).toFixed(2);
     
     userY = String(userY * 100) + '%';
-
     body.style.backgroundPositionY = userY;
 }
 
@@ -257,6 +330,9 @@ const handleCancel = (e, isTouchEvent)=> {
     // }
 
 }
+// --------------------------------------------------------
+// Register Event Handlers
+// --------------------------------------------------------
 // touch events
 body.addEventListener("touchstart", e => { handleStart(e, true) }, false);
 body.addEventListener("touchend", e => {handleEnd(e, true)}, false);
@@ -266,3 +342,10 @@ body.addEventListener("touchcancel", e => {handleCancel(e, true)}, false);
 body.addEventListener("mousedown", e => { handleStart(e, false) }, false);
 body.addEventListener("mouseup", e => {handleEnd(e, false)}, false);
 body.addEventListener("mousemove", e => {handleMove(e, false)}, { passive: false });
+// window events
+window.addEventListener("hashchange", e => {
+    console.log(app.setState());
+});
+window.addEventListener("load", e => {
+    console.log(app.setState());
+});
