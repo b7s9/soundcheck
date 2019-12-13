@@ -152,7 +152,13 @@ div.info div.live-data .unit {
 
 div.info div.live-data.active-waveshape .icons {
 	display: inline-block;
-	width: 25%;
+	width: 30%;
+}
+
+@media screen and (min-width: 768px){
+	div.info div.live-data.active-waveshape .icons {
+		width: 16%;
+	}
 }
 
 div.info div.live-data.active-waveshape .icons * {
@@ -169,7 +175,13 @@ div.info div.live-data.active-waveshape .spacer {
 }
 
 div.info div.live-data.active-waveshape .slider {
-	width: 25%;
+	width: 30%;
+}
+
+@media screen and (min-width: 768px){
+	div.info div.live-data.active-waveshape .slider {
+		width: 16%;
+	}
 }
 
 /* ---------- Startup page ---------- */
